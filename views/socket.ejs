@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>채팅방</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  </head>
+  <body>
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.8.1/socket.io.js"></script> 
+
+    <%- include('menu.html') %>
+
+    <div class="container mt-4">
+      <h1>채팅방</h1>
+      <textarea id="content" class="form-control mb-3" style="width: 300px; height: 600px;" readonly></textarea>
+      <input id="input1" class="form-control mb-2" size="50" placeholder="메시지를 입력하세요"/>
+      <div class="mb-3">
+        <button id="send" class="btn btn-primary me-2">서버에 메시지 보내기 (전체)</button>
+        <button id="room1-send" class="btn btn-success me-2">채팅방1에서 메시지 보내기</button>
+        <button id="room1" class="btn btn-warning">채팅방1 입장</button>
+      </div>
+    </div>
+
+    <script>
+        const socket = io();
+
+        // 채팅방1 입장
+        $('#room1').click(function () {
+            socket.emit('joinroom');
+            $('#content').append('[시스템] 채팅방1에 입장하셨습니다.\n');
+        });
+
+        // 전체 메시지 보내기
+        $('#send').click(function () {
+            const msg = $('#input1').val();
+            socket.emit('user-send', msg);
+            $('#input1').val('');
+        });
+
+        // room1 메시지 보내기
+        $('#room1-send').click(function () {
+            const msg = $('#input1').val();
+            socket.emit('room1-send', msg);
+            $('#input1').val('');
+        });
+
+        // 메시지 수신
+        socket.on('broadcast', function (data) {
+            $('#content').append(data + '\n');
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>
