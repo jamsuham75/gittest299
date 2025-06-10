@@ -64,7 +64,7 @@ app.get('/session', function(req, res){
     if(isNaN(req.session.milk)){
         req.session.milk = 0;
     }
-    req.session.milk = req.session.milk + 1000;
+    req.session.milk = req.session.milk + 100;
     res.send("session : " + req.session.milk + "원");
 })
 
